@@ -1,0 +1,122 @@
+<html>
+<head>
+<title>main.dart</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #6a8759;}
+.s2 { color: #cc7832;}
+.s3 { color: #cc7832; font-weight: bold;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.dart</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">'package:cloud_firestore/cloud_firestore.dart'</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">'package:flutter/material.dart'</span><span class="s2">;</span>
+
+<span class="s3">void </span><span class="s0">main() =&gt; runApp(MyApp())</span><span class="s2">;</span>
+
+<span class="s3">final </span><span class="s0">dummySnapshot = [</span>
+  {<span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;Filip&quot;</span><span class="s2">, </span><span class="s1">&quot;votes&quot;</span><span class="s0">: </span><span class="s4">15</span><span class="s0">}</span><span class="s2">,</span>
+  <span class="s0">{</span><span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;Abraham&quot;</span><span class="s2">, </span><span class="s1">&quot;votes&quot;</span><span class="s0">: </span><span class="s4">14</span><span class="s0">}</span><span class="s2">,</span>
+  <span class="s0">{</span><span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;Richard&quot;</span><span class="s2">, </span><span class="s1">&quot;votes&quot;</span><span class="s0">: </span><span class="s4">11</span><span class="s0">}</span><span class="s2">,</span>
+  <span class="s0">{</span><span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;Ike&quot;</span><span class="s2">, </span><span class="s1">&quot;votes&quot;</span><span class="s0">: </span><span class="s4">10</span><span class="s0">}</span><span class="s2">,</span>
+  <span class="s0">{</span><span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;Justin&quot;</span><span class="s2">, </span><span class="s1">&quot;votes&quot;</span><span class="s0">: </span><span class="s4">1</span><span class="s0">}</span><span class="s2">,</span>
+<span class="s0">]</span><span class="s2">;</span>
+
+<span class="s3">class </span><span class="s0">MyApp </span><span class="s3">extends </span><span class="s0">StatelessWidget {</span>
+  @override
+  Widget build(BuildContext context) {
+    <span class="s3">return </span><span class="s0">MaterialApp(</span>
+      title: <span class="s1">'Baby Names'</span><span class="s2">,</span>
+      <span class="s0">home: MyHomePage()</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+}
+
+<span class="s3">class </span><span class="s0">MyHomePage </span><span class="s3">extends </span><span class="s0">StatefulWidget {</span>
+  @override
+  _MyHomePageState createState() {
+    <span class="s3">return </span><span class="s0">_MyHomePageState()</span><span class="s2">;</span>
+  <span class="s0">}</span>
+}
+
+<span class="s3">class </span><span class="s0">_MyHomePageState </span><span class="s3">extends </span><span class="s0">State&lt;MyHomePage&gt; {</span>
+  @override
+  Widget build(BuildContext context) {
+    <span class="s3">return </span><span class="s0">Scaffold(</span>
+      appBar: AppBar(title: Text(<span class="s1">'Baby Name Votes'</span><span class="s0">))</span><span class="s2">,</span>
+      <span class="s0">body: _buildBody(context)</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+
+  Widget _buildBody(BuildContext context) {
+    <span class="s3">return </span><span class="s0">StreamBuilder&lt;QuerySnapshot&gt;(</span>
+      stream: Firestore.instance.collection(<span class="s1">'baby'</span><span class="s0">).snapshots()</span><span class="s2">,</span>
+      <span class="s0">builder: (context</span><span class="s2">, </span><span class="s0">snapshot) {</span>
+        <span class="s3">if </span><span class="s0">(!snapshot.hasData) </span><span class="s3">return </span><span class="s0">LinearProgressIndicator()</span><span class="s2">;</span>
+
+        <span class="s3">return </span><span class="s0">_buildList(context</span><span class="s2">, </span><span class="s0">snapshot.data.documents)</span><span class="s2">;</span>
+      <span class="s0">}</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+
+  Widget _buildList(BuildContext context<span class="s2">, </span><span class="s0">List&lt;DocumentSnapshot&gt; snapshot) {</span>
+    <span class="s3">return </span><span class="s0">ListView(</span>
+      padding: <span class="s3">const </span><span class="s0">EdgeInsets.only(top: </span><span class="s4">20.0</span><span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">children: snapshot.map((data) =&gt; _buildListItem(context</span><span class="s2">, </span><span class="s0">data)).toList()</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+
+  Widget _buildListItem(BuildContext context<span class="s2">, </span><span class="s0">DocumentSnapshot data) {</span>
+    <span class="s3">final </span><span class="s0">record = Record.fromSnapshot(data)</span><span class="s2">;</span>
+
+
+    <span class="s3">return </span><span class="s0">Padding(</span>
+      key: ValueKey(record.name)<span class="s2">,</span>
+      <span class="s0">padding: </span><span class="s3">const </span><span class="s0">EdgeInsets.symmetric(horizontal: </span><span class="s4">16.0</span><span class="s2">, </span><span class="s0">vertical: </span><span class="s4">8.0</span><span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">child: Container(</span>
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey)<span class="s2">,</span>
+          <span class="s0">borderRadius: BorderRadius.circular(</span><span class="s4">5.0</span><span class="s0">)</span><span class="s2">,</span>
+        <span class="s0">)</span><span class="s2">,</span>
+        <span class="s0">child: ListTile(</span>
+          title: Text(record.name)<span class="s2">,</span>
+          <span class="s0">trailing: Text(record.votes.toString())</span><span class="s2">,</span>
+          <span class="s0">onTap: () =&gt; Firestore.instance.runTransaction((transaction) async {</span>
+            <span class="s3">final </span><span class="s0">freshSnapshot = await transaction.get(record.reference)</span><span class="s2">;</span>
+            <span class="s3">final </span><span class="s0">fresh = Record.fromSnapshot(freshSnapshot)</span><span class="s2">;</span>
+
+            <span class="s0">await transaction</span>
+                .update(record.reference<span class="s2">, </span><span class="s0">{</span><span class="s1">'votes'</span><span class="s0">: fresh.votes + </span><span class="s4">1</span><span class="s0">})</span><span class="s2">;</span>
+          <span class="s0">})</span><span class="s2">,</span>
+        <span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+}
+
+<span class="s3">class </span><span class="s0">Record {</span>
+  <span class="s3">final </span><span class="s0">String name</span><span class="s2">;</span>
+  <span class="s3">final </span><span class="s0">int votes</span><span class="s2">;</span>
+  <span class="s3">final </span><span class="s0">DocumentReference reference</span><span class="s2">;</span>
+
+  <span class="s0">Record.fromMap(Map&lt;String</span><span class="s2">, </span><span class="s0">dynamic&gt; map</span><span class="s2">, </span><span class="s0">{</span><span class="s3">this</span><span class="s0">.reference})</span>
+      : <span class="s3">assert</span><span class="s0">(map[</span><span class="s1">'name'</span><span class="s0">] != </span><span class="s3">null</span><span class="s0">)</span><span class="s2">,</span>
+        <span class="s3">assert</span><span class="s0">(map[</span><span class="s1">'votes'</span><span class="s0">] != </span><span class="s3">null</span><span class="s0">)</span><span class="s2">,</span>
+        <span class="s0">name = map[</span><span class="s1">'name'</span><span class="s0">]</span><span class="s2">,</span>
+        <span class="s0">votes = map[</span><span class="s1">'votes'</span><span class="s0">]</span><span class="s2">;</span>
+
+  <span class="s0">Record.fromSnapshot(DocumentSnapshot snapshot)</span>
+      : <span class="s3">this</span><span class="s0">.fromMap(snapshot.data</span><span class="s2">, </span><span class="s0">reference: snapshot.reference)</span><span class="s2">;</span>
+
+  <span class="s0">@override</span>
+  String toString() =&gt; <span class="s1">&quot;Record&lt;</span><span class="s0">$name</span><span class="s1">:</span><span class="s0">$votes</span><span class="s1">&gt;&quot;</span><span class="s2">;</span>
+<span class="s0">}</span></pre>
+</body>
+</html>
